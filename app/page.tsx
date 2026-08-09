@@ -342,7 +342,7 @@ function BackgroundGlow() {
   return (
     <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
       <motion.div
-        className="absolute -left-1/3 -top-1/3 h-[70vh] w-[70vh] rounded-full bg-[#8b5cf6]/25 blur-[140px]"
+        className="absolute -left-1/4 -top-1/4 h-[100vh] w-[100vh] rounded-full bg-[#8b5cf6]/60 blur-[110px]"
         animate={{
           x: [0, 80, -50, 0],
           y: [0, 60, -40, 0],
@@ -351,7 +351,7 @@ function BackgroundGlow() {
         transition={{ duration: 28, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.div
-        className="absolute -bottom-1/3 -right-1/3 h-[65vh] w-[65vh] rounded-full bg-[#06b6d4]/20 blur-[140px]"
+        className="absolute -bottom-1/3 -right-1/4 h-[95vh] w-[95vh] rounded-full bg-[#06b6d4]/55 blur-[110px]"
         animate={{
           x: [0, -70, 40, 0],
           y: [0, -50, 60, 0],
@@ -360,12 +360,12 @@ function BackgroundGlow() {
         transition={{ duration: 34, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.div
-        className="absolute left-1/4 top-1/3 h-[50vh] w-[50vh] rounded-full bg-[#d946ef]/15 blur-[130px]"
+        className="absolute left-1/4 top-1/3 h-[80vh] w-[80vh] rounded-full bg-[#d946ef]/45 blur-[100px]"
         animate={{
           x: [0, 40, -60, 0],
           y: [0, -40, 30, 0],
           scale: [1, 1.1, 0.95, 1],
-          opacity: [0.5, 0.85, 0.5],
+          opacity: [0.6, 0.9, 0.6],
         }}
         transition={{ duration: 30, repeat: Infinity, ease: "easeInOut" }}
       />

@@ -153,3 +153,18 @@ A third bug (frontend-only, already folded into the Entry 7 commit since `app/pa
 > and onChange behavior — this is purely a visual swap of the picker component,
 > no logic changes. Quick visual check in the browser, then one single commit
 > and push.
+
+---
+
+## Entry 11 — Make aurora background dramatically more visible
+
+**Built:** Bumped the `BackgroundGlow` blobs in [`app/page.tsx`](app/page.tsx) — sizes up to 100vh/95vh/80vh (from 70/65/50vh), opacity up to 60%/55%/45% (from 25%/20%/15%), slightly less blur (110px/110px/100px vs 140px/140px/130px) so the violet/cyan/magenta colors read clearly against the black background instead of as a faint hint. The violet blob stays anchored top-left so it's visible on first load without scrolling. Confirmed via computed styles in the browser (background-color opacity and blur values match) — pure CSS/size/opacity change, no new dependencies, no logic touched.
+
+**Prompt:**
+> Time-critical, single focused change. The background aurora glow effect is
+> too subtle to notice. Make it dramatically more visible: increase blob sizes
+> significantly, increase opacity so the violet/cyan/magenta colors are clearly,
+> obviously visible against the black background, make the colors more
+> vivid/saturated, make sure at least one large glow is visible on first load
+> without scrolling. Pure CSS/background change only. Quick visual confirmation,
+> then one commit and push immediately.
