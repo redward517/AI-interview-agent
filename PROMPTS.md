@@ -83,3 +83,22 @@ A running record of meaningful work in this project and the prompt that produced
 **Prompt:**
 > First, locate candidates.json (check Downloads, same place curriculum.json was
 > found) and copy it into data/candidates.json, matching how curriculum.json is set up.
+
+---
+
+## Entry 7 — Interview page UI (chat, progress, report card)
+
+**Built:** [`app/page.tsx`](app/page.tsx) — the main interview page. A candidate dropdown starts a session against `/api/interview` on selection; a chat log renders alternating candidate/interviewer bubbles that fade+slide in with Framer Motion; a live "Questions X/10" / "Days covered Y/4" progress bar animates its fill width; on `done: true` the input is replaced by an animated report card (summary, strengths, gaps, next steps). A fixed, slowly drifting blurred gradient glow sits behind everything for the dark/premium look. Installed `framer-motion` (the task said it was already installed — it wasn't, so added it). Verified the full flow live in the browser (see Entry 8 for the two real bugs this surfaced and fixed).
+
+**Prompt:**
+> Then build the main page (app/page.tsx): [dropdown candidate picker posting to
+> /api/interview with sessionId+candidate; chat interface with text input/send
+> button posting {sessionId, message, history, progress} and updating from the
+> reply; live progress indicator "Questions: X/10" / "Days covered: Y/4"; on
+> done:true replace the input with a report card showing feedback.summary,
+> strengths, gaps, next]. Style with Tailwind + Framer Motion only (no
+> Three.js/WebGL/canvas): dark near-black spacious layout, one accent color used
+> sparingly, chat bubbles fade+slide in, a soft drifting/pulsing blurred gradient
+> background, animated progress bar fill, and a fade+scale reveal for the final
+> report card. Test it by actually running through a mock interview in the
+> browser before committing.
