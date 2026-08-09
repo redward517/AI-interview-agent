@@ -118,3 +118,22 @@ A third bug (frontend-only, already folded into the Entry 7 commit since `app/pa
 > above — not a separate user request. Reproduced by running full interviews
 > against a real Anthropic session and watching the network/console/React state
 > directly.)
+
+---
+
+## Entry 9 — Visual redesign: violet/cyan/aurora theme
+
+**Built:** Restyled [`app/page.tsx`](app/page.tsx) — pure CSS/JSX changes, no logic touched. New palette (`#0a0a0f` base, `#8b5cf6`→`#06b6d4` violet-to-cyan accent gradient), a 3-blob violet/cyan/magenta aurora background that drifts and pulses on a slow Framer Motion loop, glassmorphic interviewer bubbles (`backdrop-blur` + faint accent border) against gradient-filled candidate bubbles, a gradient progress-bar fill with a glow shadow, a gradient-text headline and report-card header, and hover scale+glow on the candidate dropdown and send button. Also switched the progress-bar fill from an animated `width` to `transform: scaleX()` (compositor-friendly, standard best practice for animated bars) while investigating a rendering issue that turned out to be specific to this session's browser pane not being displayed/composited (confirmed via `document.visibilityState` staying `"hidden"` even after explicitly fronting the tab) — not a real app bug, so no other changes were made chasing it.
+
+**Prompt:**
+> This is a pure visual styling pass — do NOT touch any interview logic, API
+> routes, or state handling. Redesign the visual theme of app/page.tsx with:
+> a dark charcoal (#0a0a0f) base and violet-to-cyan (#8b5cf6→#06b6d4) accent
+> gradient for buttons/progress fill/candidate bubbles/headline; a large blurred
+> aurora-style violet/cyan/magenta gradient blob drifting/pulsing behind the
+> content (the single biggest visual upgrade); glassmorphic interviewer bubbles
+> vs gradient-filled candidate bubbles; a glowing gradient progress bar; a
+> glass-style report card with a gradient accent; a bolder gradient-text
+> headline, letter-spaced uppercase label, and smooth hover states (scale+glow)
+> on the dropdown and send button. Quick visual check in the browser, then
+> commit and push.

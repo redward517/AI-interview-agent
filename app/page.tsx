@@ -142,15 +142,15 @@ export default function Home() {
   }
 
   return (
-    <div className="relative min-h-screen w-full bg-neutral-950 text-neutral-100">
+    <div className="relative min-h-screen w-full bg-[#0a0a0f] text-neutral-100">
       <BackgroundGlow />
 
       <main className="relative z-10 mx-auto w-full max-w-2xl px-6 py-14 sm:px-8">
         <header className="mb-8">
-          <p className="text-xs font-medium uppercase tracking-[0.2em] text-violet-400">
+          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#a78bfa]">
             ABTalks AI Cohort
           </p>
-          <h1 className="mt-2 text-2xl font-semibold text-neutral-50 sm:text-3xl">
+          <h1 className="mt-2 bg-gradient-to-r from-[#8b5cf6] to-[#06b6d4] bg-clip-text text-3xl font-bold text-transparent sm:text-4xl">
             Technical Interview
           </h1>
 
@@ -165,7 +165,7 @@ export default function Home() {
               id="candidate"
               value={selectedId}
               onChange={(e) => handleSelectCandidate(e.target.value)}
-              className="w-full rounded-xl border border-white/10 bg-neutral-900 px-4 py-3 text-sm text-neutral-100 outline-none transition focus:border-violet-500/60"
+              className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-neutral-100 outline-none backdrop-blur-sm transition-all duration-200 hover:scale-[1.01] hover:border-[#8b5cf6]/40 hover:shadow-[0_0_20px_rgba(139,92,246,0.25)] focus:border-[#8b5cf6]/60 focus:shadow-[0_0_20px_rgba(139,92,246,0.3)]"
             >
               <option value="" disabled>
                 Select a candidate…
@@ -187,7 +187,7 @@ export default function Home() {
 
         {selectedCandidate && (
           <section className="flex flex-col gap-4">
-            <div className="sticky top-4 z-20 flex gap-6 rounded-2xl border border-white/5 bg-neutral-900/70 px-5 py-4 backdrop-blur-md">
+            <div className="sticky top-4 z-20 flex gap-6 rounded-2xl border border-white/10 bg-white/5 px-5 py-4 backdrop-blur-xl">
               <ProgressStat
                 label="Questions"
                 value={progress.questionsAsked}
@@ -200,7 +200,7 @@ export default function Home() {
               />
             </div>
 
-            <div className="rounded-3xl border border-white/5 bg-neutral-900/30 p-4 backdrop-blur-sm sm:p-6">
+            <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-4 backdrop-blur-sm sm:p-6">
               <div className="space-y-4">
                 <AnimatePresence initial={false}>
                   {history.map((m, i) => (
@@ -224,7 +224,7 @@ export default function Home() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.2 }}
-                    className="flex gap-2 rounded-2xl border border-white/5 bg-neutral-900/70 p-2 backdrop-blur-md"
+                    className="flex gap-2 rounded-2xl border border-white/10 bg-white/5 p-2 backdrop-blur-xl"
                   >
                     <input
                       value={input}
@@ -237,7 +237,7 @@ export default function Home() {
                     <button
                       onClick={handleSend}
                       disabled={starting || sending || !input.trim()}
-                      className="rounded-xl bg-violet-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-violet-500 disabled:opacity-40"
+                      className="rounded-xl bg-gradient-to-r from-[#8b5cf6] to-[#06b6d4] px-5 py-2.5 text-sm font-medium text-white transition-all duration-200 hover:scale-105 hover:shadow-[0_0_20px_rgba(139,92,246,0.5)] disabled:opacity-40 disabled:hover:scale-100 disabled:hover:shadow-none"
                     >
                       Send
                     </button>
@@ -256,22 +256,32 @@ function BackgroundGlow() {
   return (
     <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
       <motion.div
-        className="absolute -left-1/4 -top-1/4 h-[60vh] w-[60vh] rounded-full bg-violet-600/20 blur-[120px]"
+        className="absolute -left-1/3 -top-1/3 h-[70vh] w-[70vh] rounded-full bg-[#8b5cf6]/25 blur-[140px]"
         animate={{
-          x: [0, 60, -40, 0],
-          y: [0, 40, -30, 0],
-          scale: [1, 1.15, 0.9, 1],
+          x: [0, 80, -50, 0],
+          y: [0, 60, -40, 0],
+          scale: [1, 1.2, 0.9, 1],
         }}
-        transition={{ duration: 26, repeat: Infinity, ease: "easeInOut" }}
+        transition={{ duration: 28, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.div
-        className="absolute -bottom-1/4 -right-1/4 h-[55vh] w-[55vh] rounded-full bg-indigo-500/10 blur-[120px]"
+        className="absolute -bottom-1/3 -right-1/3 h-[65vh] w-[65vh] rounded-full bg-[#06b6d4]/20 blur-[140px]"
         animate={{
-          x: [0, -50, 30, 0],
-          y: [0, -30, 40, 0],
-          scale: [1, 0.9, 1.1, 1],
+          x: [0, -70, 40, 0],
+          y: [0, -50, 60, 0],
+          scale: [1, 0.9, 1.15, 1],
         }}
-        transition={{ duration: 32, repeat: Infinity, ease: "easeInOut" }}
+        transition={{ duration: 34, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="absolute left-1/4 top-1/3 h-[50vh] w-[50vh] rounded-full bg-[#d946ef]/15 blur-[130px]"
+        animate={{
+          x: [0, 40, -60, 0],
+          y: [0, -40, 30, 0],
+          scale: [1, 1.1, 0.95, 1],
+          opacity: [0.5, 0.85, 0.5],
+        }}
+        transition={{ duration: 30, repeat: Infinity, ease: "easeInOut" }}
       />
     </div>
   );
@@ -287,10 +297,10 @@ function ChatBubble({ role, content }: HistoryMessage) {
       className={`flex ${isUser ? "justify-end" : "justify-start"}`}
     >
       <div
-        className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-lg ${
+        className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
           isUser
-            ? "bg-violet-600/90 text-white"
-            : "border border-white/5 bg-neutral-900/80 text-neutral-100"
+            ? "bg-gradient-to-br from-[#8b5cf6] to-[#06b6d4] text-white shadow-[0_4px_24px_rgba(139,92,246,0.35)]"
+            : "border border-[#8b5cf6]/20 bg-white/5 text-neutral-100 shadow-lg backdrop-blur-md"
         }`}
       >
         {content}
@@ -307,11 +317,12 @@ function TypingBubble() {
       exit={{ opacity: 0 }}
       className="flex justify-start"
     >
-      <div className="flex items-center gap-1.5 rounded-2xl border border-white/5 bg-neutral-900/80 px-4 py-3">
-        {[0, 1, 2].map((i) => (
+      <div className="flex items-center gap-1.5 rounded-2xl border border-[#8b5cf6]/20 bg-white/5 px-4 py-3 backdrop-blur-md">
+        {["#8b5cf6", "#a78bfa", "#06b6d4"].map((color, i) => (
           <motion.span
-            key={i}
-            className="h-1.5 w-1.5 rounded-full bg-neutral-500"
+            key={color}
+            className="h-1.5 w-1.5 rounded-full"
+            style={{ backgroundColor: color }}
             animate={{ opacity: [0.3, 1, 0.3] }}
             transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2 }}
           />
@@ -335,16 +346,14 @@ function ProgressStat({
     <div className="flex-1">
       <div className="mb-1.5 flex items-center justify-between text-xs text-neutral-400">
         <span>{label}</span>
-        <span className="tabular-nums text-neutral-300">
+        <span className="tabular-nums text-neutral-200">
           {value}/{max}
         </span>
       </div>
-      <div className="h-1.5 w-full overflow-hidden rounded-full bg-neutral-800">
-        <motion.div
-          className="h-full rounded-full bg-violet-500"
-          initial={false}
-          animate={{ width: `${pct}%` }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
+      <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/10">
+        <div
+          className="h-full w-full origin-left rounded-full bg-gradient-to-r from-[#8b5cf6] to-[#06b6d4] shadow-[0_0_12px_rgba(139,92,246,0.6)] transition-transform duration-500 ease-out"
+          style={{ transform: `scaleX(${pct / 100})` }}
         />
       </div>
     </div>
@@ -357,30 +366,33 @@ function ReportCard({ feedback }: { feedback: Feedback }) {
       initial={{ opacity: 0, scale: 0.94, y: 10 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-      className="rounded-3xl border border-white/10 bg-neutral-900/80 p-6 shadow-2xl backdrop-blur-md"
+      className="overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-2xl backdrop-blur-xl"
     >
-      <h2 className="text-lg font-semibold text-neutral-50">
-        Interview Report
-      </h2>
-      <p className="mt-2 text-sm leading-relaxed text-neutral-300">
-        {feedback.summary}
-      </p>
+      <div className="h-1 w-full bg-gradient-to-r from-[#8b5cf6] to-[#06b6d4]" />
+      <div className="p-6">
+        <h2 className="bg-gradient-to-r from-[#8b5cf6] to-[#06b6d4] bg-clip-text text-lg font-semibold text-transparent">
+          Interview Report
+        </h2>
+        <p className="mt-2 text-sm leading-relaxed text-neutral-300">
+          {feedback.summary}
+        </p>
 
-      <ReportSection
-        title="Strengths"
-        items={feedback.strengths}
-        dotClassName="bg-emerald-400"
-      />
-      <ReportSection
-        title="Gaps"
-        items={feedback.gaps}
-        dotClassName="bg-amber-400"
-      />
-      <ReportSection
-        title="Next steps"
-        items={feedback.next}
-        dotClassName="bg-violet-400"
-      />
+        <ReportSection
+          title="Strengths"
+          items={feedback.strengths}
+          dotClassName="bg-emerald-400"
+        />
+        <ReportSection
+          title="Gaps"
+          items={feedback.gaps}
+          dotClassName="bg-amber-400"
+        />
+        <ReportSection
+          title="Next steps"
+          items={feedback.next}
+          dotClassName="bg-[#06b6d4]"
+        />
+      </div>
     </motion.div>
   );
 }
