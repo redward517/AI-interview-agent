@@ -161,21 +161,11 @@ export default function Home() {
             >
               Candidate
             </label>
-            <select
-              id="candidate"
-              value={selectedId}
-              onChange={(e) => handleSelectCandidate(e.target.value)}
-              className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-neutral-100 outline-none backdrop-blur-sm transition-all duration-200 hover:scale-[1.01] hover:border-[#8b5cf6]/40 hover:shadow-[0_0_20px_rgba(139,92,246,0.25)] focus:border-[#8b5cf6]/60 focus:shadow-[0_0_20px_rgba(139,92,246,0.3)]"
-            >
-              <option value="" disabled>
-                Select a candidate…
-              </option>
-              {candidates.map((c) => (
-                <option key={c.member.id} value={c.member.id}>
-                  {c.member.name} — {c.member.jobRole}
-                </option>
-              ))}
-            </select>
+            <CandidateDropdown
+              candidates={candidates}
+              selectedId={selectedId}
+              onSelect={handleSelectCandidate}
+            />
           </div>
         </header>
 
@@ -248,6 +238,102 @@ export default function Home() {
           </section>
         )}
       </main>
+    </div>
+  );
+}
+
+function CandidateDropdown({
+  candidates,
+  selectedId,
+  onSelect,
+}: {
+  candidates: CandidateRecord[];
+  selectedId: string;
+  onSelect: (id: string) => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  const selected = candidates.find((c) => c.member.id === selectedId) ?? null;
+
+  useEffect(() => {
+    function handlePointerDown(e: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    function handleEscape(e: globalThis.KeyboardEvent) {
+      if (e.key === "Escape") setIsOpen(false);
+    }
+    document.addEventListener("mousedown", handlePointerDown);
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, []);
+
+  return (
+    <div ref={containerRef} className="relative">
+      <button
+        type="button"
+        id="candidate"
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+        onClick={() => setIsOpen((v) => !v)}
+        className="flex w-full items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-left text-sm outline-none backdrop-blur-sm transition-all duration-200 hover:scale-[1.01] hover:border-[#8b5cf6]/40 hover:shadow-[0_0_20px_rgba(139,92,246,0.25)] focus:border-[#8b5cf6]/60 focus:shadow-[0_0_20px_rgba(139,92,246,0.3)]"
+      >
+        <span className={selected ? "text-neutral-100" : "text-neutral-500"}>
+          {selected
+            ? `${selected.member.name} — ${selected.member.jobRole}`
+            : "Select a candidate…"}
+        </span>
+        <svg
+          viewBox="0 0 20 20"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={1.75}
+          className={`h-4 w-4 shrink-0 text-neutral-400 transition-transform duration-200 ${
+            isOpen ? "rotate-180" : ""
+          }`}
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M5 7.5l5 5 5-5" />
+        </svg>
+      </button>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.ul
+            role="listbox"
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
+            className="absolute z-30 mt-2 max-h-72 w-full overflow-y-auto rounded-xl border border-[#8b5cf6]/20 bg-[#0f0f16]/95 p-1 shadow-2xl backdrop-blur-xl"
+          >
+            {candidates.map((c) => {
+              const isSelected = c.member.id === selectedId;
+              return (
+                <li key={c.member.id} role="option" aria-selected={isSelected}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onSelect(c.member.id);
+                      setIsOpen(false);
+                    }}
+                    className={`w-full rounded-lg px-3 py-2.5 text-left text-sm transition-colors duration-150 ${
+                      isSelected
+                        ? "bg-gradient-to-r from-[#8b5cf6]/30 to-[#06b6d4]/30 text-white"
+                        : "text-neutral-300 hover:bg-white/5"
+                    }`}
+                  >
+                    {c.member.name} — {c.member.jobRole}
+                  </button>
+                </li>
+              );
+            })}
+          </motion.ul>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

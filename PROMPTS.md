@@ -137,3 +137,19 @@ A third bug (frontend-only, already folded into the Entry 7 commit since `app/pa
 > headline, letter-spaced uppercase label, and smooth hover states (scale+glow)
 > on the dropdown and send button. Quick visual check in the browser, then
 > commit and push.
+
+---
+
+## Entry 10 — Custom candidate dropdown
+
+**Built:** Replaced the native `<select>` in [`app/page.tsx`](app/page.tsx) with a custom `CandidateDropdown` component: a button showing the selected candidate (or the placeholder) that toggles a glass-style option list (backdrop-blur, violet border, gradient highlight on the selected/hovered item, click-outside and Escape to close). `handleSelectCandidate` itself is untouched — the new component just calls it via an `onSelect` prop instead of a native `onChange` event, so selection behavior and the options list are identical to before. Verified in the browser: opens with all 20 candidates, selecting one starts the real interview session correctly, and closes cleanly.
+
+**Prompt:**
+> Replace the native <select> for the candidate picker with a custom-built
+> dropdown: a button showing the selected candidate (or "Select a candidate..."),
+> which toggles a styled list below it on click. Match the existing dark glass
+> aesthetic already used elsewhere on the page (backdrop-blur, subtle violet
+> border, gradient accent on hover/selected item). Keep the exact same options
+> and onChange behavior — this is purely a visual swap of the picker component,
+> no logic changes. Quick visual check in the browser, then one single commit
+> and push.
