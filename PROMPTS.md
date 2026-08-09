@@ -29,3 +29,12 @@ A running record of meaningful work in this project and the prompt that produced
 > their SDK docs specify). Install @ai-sdk/anthropic, @ai-sdk/groq, and ai if not
 > already present. Add ANTHROPIC_API_KEY, GROQ_API_KEY, and MODEL_PROVIDER=anthropic
 > to .env.local.
+
+---
+
+## Entry 3 — Fix Mission type to match real candidate data
+
+**Built:** Made `passed`, `attempts`, and `skipped` optional on the `Mission` interface in [`lib/systemPrompt.ts`](lib/systemPrompt.ts) (with safe fallbacks when rendering mission history into the prompt). The real `candidates.json` sample data omits `passed`/`attempts` on skipped missions (e.g. `{ "day": 29, "title": "...", "skipped": true }`), which didn't fit the original required-fields shape.
+
+**Prompt:**
+> (Follow-up correctness fix made while building the `/api/interview` route below, after inspecting the real candidate data schema.)

@@ -1,9 +1,9 @@
 export interface Mission {
   day: number;
   title: string;
-  passed: boolean;
-  attempts: number;
-  skipped: boolean;
+  passed?: boolean;
+  attempts?: number;
+  skipped?: boolean;
 }
 
 export interface CandidateMember {
@@ -29,7 +29,7 @@ export function buildSystemPrompt(
   const missionHistory = candidate.missions
     .map(
       (m) =>
-        `Day ${m.day} - ${m.title}: passed=${m.passed}, attempts=${m.attempts}, skipped=${m.skipped}`
+        `Day ${m.day} - ${m.title}: passed=${m.passed ?? false}, attempts=${m.attempts ?? 0}, skipped=${m.skipped ?? false}`
     )
     .join("\n");
 
