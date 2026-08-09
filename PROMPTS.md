@@ -73,3 +73,13 @@ A running record of meaningful work in this project and the prompt that produced
 > After this is built, write a small test script (or use curl) that simulates
 > starting a session and sending one reply, so we can confirm it actually returns
 > valid JSON with a real model response before we build the UI on top of it.
+
+---
+
+## Entry 6 — Copy candidates.json into data/
+
+**Built:** [`data/candidates.json`](data/candidates.json) — copied from the provided candidates file into the project, matching how `data/curriculum.json` was set up, so `app/page.tsx` can populate the candidate picker.
+
+**Prompt:**
+> First, locate candidates.json (check Downloads, same place curriculum.json was
+> found) and copy it into data/candidates.json, matching how curriculum.json is set up.
