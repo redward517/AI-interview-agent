@@ -37,6 +37,17 @@ const MAX_QUESTIONS = 10;
 const MAX_DAYS = 4;
 const candidates: CandidateRecord[] = candidatesData.candidates;
 
+// Multi-layer shadows are set inline rather than as arbitrary Tailwind classes,
+// since the commas inside the value make the bracket syntax ambiguous.
+const PANEL_GLOW =
+  "0 0 0 1px rgba(139,92,246,0.14), 0 0 24px rgba(139,92,246,0.16), 0 0 52px rgba(6,182,212,0.10)";
+
+// drop-shadow rather than text-shadow: the headline is gradient-filled via
+// bg-clip-text, so a text-shadow would paint over the gradient instead of
+// haloing it. A filter applies to the composited result.
+const HEADLINE_GLOW =
+  "drop-shadow(0 0 14px rgba(139,92,246,0.5)) drop-shadow(0 0 30px rgba(6,182,212,0.3))";
+
 async function postInterview(body: unknown): Promise<InterviewResponse> {
   const res = await fetch("/api/interview", {
     method: "POST",
@@ -150,7 +161,10 @@ export default function Home() {
           <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#a78bfa]">
             ABTalks AI Cohort
           </p>
-          <h1 className="mt-2 bg-gradient-to-r from-[#8b5cf6] to-[#06b6d4] bg-clip-text text-3xl font-bold text-transparent sm:text-4xl">
+          <h1
+            style={{ filter: HEADLINE_GLOW }}
+            className="mt-2 bg-gradient-to-r from-[#8b5cf6] to-[#06b6d4] bg-clip-text text-3xl font-bold text-transparent sm:text-4xl"
+          >
             Technical Interview
           </h1>
 
@@ -177,7 +191,10 @@ export default function Home() {
 
         {selectedCandidate && (
           <section className="flex flex-col gap-4">
-            <div className="sticky top-4 z-20 flex gap-6 rounded-2xl border border-white/10 bg-white/5 px-5 py-4 backdrop-blur-xl">
+            <div
+              style={{ boxShadow: PANEL_GLOW }}
+              className="sticky top-4 z-20 flex gap-6 rounded-2xl border border-white/10 bg-white/5 px-5 py-4 backdrop-blur-xl"
+            >
               <ProgressStat
                 label="Questions"
                 value={progress.questionsAsked}
@@ -190,7 +207,10 @@ export default function Home() {
               />
             </div>
 
-            <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-4 backdrop-blur-sm sm:p-6">
+            <div
+              style={{ boxShadow: PANEL_GLOW }}
+              className="rounded-3xl border border-white/10 bg-white/[0.03] p-4 backdrop-blur-sm sm:p-6"
+            >
               <div className="space-y-4">
                 <AnimatePresence initial={false}>
                   {history.map((m, i) => (
@@ -214,6 +234,7 @@ export default function Home() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.2 }}
+                    style={{ boxShadow: PANEL_GLOW }}
                     className="flex gap-2 rounded-2xl border border-white/10 bg-white/5 p-2 backdrop-blur-xl"
                   >
                     <input
@@ -227,7 +248,7 @@ export default function Home() {
                     <button
                       onClick={handleSend}
                       disabled={starting || sending || !input.trim()}
-                      className="rounded-xl bg-gradient-to-r from-[#8b5cf6] to-[#06b6d4] px-5 py-2.5 text-sm font-medium text-white transition-all duration-200 hover:scale-105 hover:shadow-[0_0_20px_rgba(139,92,246,0.5)] disabled:opacity-40 disabled:hover:scale-100 disabled:hover:shadow-none"
+                      className="rounded-xl bg-gradient-to-r from-[#8b5cf6] to-[#06b6d4] px-5 py-2.5 text-sm font-medium text-white shadow-[0_0_16px_rgba(139,92,246,0.45)] transition-all duration-200 hover:scale-105 hover:shadow-[0_0_30px_rgba(139,92,246,0.8)] disabled:opacity-40 disabled:shadow-none disabled:hover:scale-100 disabled:hover:shadow-none"
                     >
                       Send
                     </button>
@@ -338,9 +359,13 @@ function CandidateDropdown({
   );
 }
 
+// The layer sits at z-0, not -z-10: the page wrapper's opaque background is an
+// in-flow block, which paints AFTER negative-z descendants in the root stacking
+// context and would cover the aurora completely. As a positioned z-0 layer it
+// paints on top of that background, while `main` (z-10) stays above it.
 function BackgroundGlow() {
   return (
-    <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+    <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
       <motion.div
         className="absolute -left-1/4 -top-1/4 h-[100vh] w-[100vh] rounded-full bg-[#8b5cf6]/60 blur-[110px]"
         animate={{

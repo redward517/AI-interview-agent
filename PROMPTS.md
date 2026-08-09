@@ -168,3 +168,26 @@ A third bug (frontend-only, already folded into the Entry 7 commit since `app/pa
 > vivid/saturated, make sure at least one large glow is visible on first load
 > without scrolling. Pure CSS/background change only. Quick visual confirmation,
 > then one commit and push immediately.
+
+---
+
+## Entry 12 — Fix invisible aurora (stacking bug) + neon polish
+
+**Built:** Root-caused the "invisible aurora" in [`app/page.tsx`](app/page.tsx). It was never an opacity problem — it was CSS stacking order. The page wrapper (`div.relative`) has no `z-index`, so `position: relative` does **not** create a stacking context, which meant the aurora's `-z-10` placed it in the *root* stacking context. Paint order there is: canvas background → negative-z descendants (the aurora) → in-flow blocks (the wrapper's opaque `bg-[#0a0a0f]`). The opaque wrapper painted straight over the aurora every time, so raising opacity/size changed nothing. Fixed by moving the layer to `z-0`, where it paints as a positioned descendant *after* the wrapper background while `main` (`z-10`) stays above it. Ruled out the other suspects: arbitrary Tailwind values compile fine (computed styles showed real `blur(110px)` / `rgba(...,0.6)`), and `overflow-hidden` clipping was intended.
+
+Polish added alongside: a violet/cyan glow on the "Technical Interview" headline (via `filter: drop-shadow`, not `text-shadow` — the headline is gradient-filled with `bg-clip-text`, so a text-shadow would paint *over* the gradient instead of haloing it); a faint violet/cyan `box-shadow` on the progress panel, chat container, and composer so the panels read as lit; and a base + intensifying hover glow on the Send button. Multi-layer shadows are inline styles since commas make Tailwind's bracket syntax ambiguous.
+
+**Verification:** screenshots are unavailable in this environment (the browser pane isn't composited), so paint order was proven by hit-testing, which resolves through the same stacking order as painting — and A/B'd against the old value: with `-z-10` the topmost element at a blob's location was the opaque wrapper (aurora hidden, reproducing the bug); with `z-0` it was the aurora blob. Also confirmed content still hit-tests above the aurora (no regression), all three blobs are on-screen at load, and the headline/panel glows resolve to real computed values.
+
+**Prompt:**
+> The background aurora glow effect is STILL completely invisible on the live
+> site — pure black. Last change doubled the opacity and increased sizes ~40%
+> with zero visible difference, which means the layer isn't being painted at all.
+> Do NOT just increase values again. Diagnose the actual cause first: check
+> opaque parent background painting over it / stacking order, overflow-hidden
+> clipping, whether arbitrary Tailwind values actually compile in the build, and
+> whether the container is fixed with a proper z-index below content but above
+> the page background. Fix the root cause. Then add polish: soft neon glow on
+> the headline, faint glowing borders on the chat/progress/input panels, and a
+> gentle glow on the Send button that intensifies on hover. Verify actual paint,
+> not just computed values. Then commit and push.
