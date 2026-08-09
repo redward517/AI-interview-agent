@@ -62,3 +62,14 @@ A running record of meaningful work in this project and the prompt that produced
 > feedback (only when done), history, progress} — 'reply', 'done', and 'feedback' must
 > match technical-spec.md exactly since that's what's graded; history and progress are
 > extra fields we need for state.
+
+---
+
+## Entry 5 — /api/interview smoke test script
+
+**Built:** [`scripts/test-interview.mjs`](scripts/test-interview.mjs) — a standalone Node script (`npm run test:interview`) that starts a session against a running dev server, validates the response shape (`reply`/`done`/`history`/`progress`), sends one simulated candidate reply, and validates the continuing-turn response too, including the `feedback` shape if `done: true`. Ran it against the live dev server with a real Anthropic response to confirm the endpoint actually works end-to-end before building any UI on top of it.
+
+**Prompt:**
+> After this is built, write a small test script (or use curl) that simulates
+> starting a session and sending one reply, so we can confirm it actually returns
+> valid JSON with a real model response before we build the UI on top of it.
