@@ -79,7 +79,16 @@ function selectCurriculumDays(
 function extractJson(text: string): unknown {
   const trimmed = text.trim();
   const fenced = trimmed.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/i);
-  return JSON.parse(fenced ? fenced[1] : trimmed);
+  if (fenced) return JSON.parse(fenced[1]);
+  try {
+    return JSON.parse(trimmed);
+  } catch {
+    // Model sometimes wraps the JSON in prose despite instructions; fall
+    // back to the first balanced-looking {...} block before giving up.
+    const match = trimmed.match(/\{[\s\S]*\}/);
+    if (!match) throw new SyntaxError("No JSON object found in model response");
+    return JSON.parse(match[0]);
+  }
 }
 
 function isFeedback(x: unknown): x is Feedback {
@@ -110,23 +119,57 @@ function parseModelReply(text: string): ModelReply {
     throw new Error("Model reply marked done but feedback is missing/invalid");
   }
   return {
-    reply: r.reply,
+    reply: nonEmpty(r.reply),
     done: r.done,
     currentDay: r.currentDay,
     feedback: r.done ? (r.feedback as Feedback) : undefined,
   };
 }
 
+const MAX_JSON_RETRIES = 2;
+
+// The Anthropic API rejects messages with empty text content blocks, which
+// can happen if the model returns an empty completion; guard before echoing
+// any model output back into a later turn.
+function nonEmpty(text: string): string {
+  return text.trim().length > 0 ? text : "(no response)";
+}
+
+// The model occasionally breaks the JSON-only output rule mid-conversation
+// (drifting into plain prose). Retry with a corrective nudge — not persisted
+// into the returned history — before giving up.
 async function callModel(
   system: string,
   messages: HistoryMessage[]
 ): Promise<ModelReply> {
-  const { text } = await generateText({
-    model: getModel(),
-    instructions: system,
-    messages,
-  });
-  return parseModelReply(text);
+  let attemptMessages = messages;
+  let lastError: unknown;
+
+  for (let attempt = 0; attempt <= MAX_JSON_RETRIES; attempt++) {
+    const { text } = await generateText({
+      model: getModel(),
+      instructions: system,
+      messages: attemptMessages,
+    });
+    try {
+      return parseModelReply(text);
+    } catch (err) {
+      lastError = err;
+      attemptMessages = [
+        ...attemptMessages,
+        { role: "assistant", content: nonEmpty(text) },
+        {
+          role: "user",
+          content:
+            "Your previous response was not valid JSON. Respond again with ONLY the JSON object described in the OUTPUT rules — no prose, no markdown.",
+        },
+      ];
+    }
+  }
+
+  throw lastError instanceof Error
+    ? lastError
+    : new Error("Model did not return valid JSON");
 }
 
 function meetsCompletionGate(questionsAsked: number, daysCovered: number[]) {

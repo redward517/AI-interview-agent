@@ -102,3 +102,19 @@ A running record of meaningful work in this project and the prompt that produced
 > background, animated progress bar fill, and a fade+scale reveal for the final
 > report card. Test it by actually running through a mock interview in the
 > browser before committing.
+
+---
+
+## Entry 8 — Fix two real bugs found while testing in the browser
+
+**Built:** Two fixes to [`app/api/interview/route.ts`](app/api/interview/route.ts), both found by actually running interviews in the browser (not just curl), as instructed:
+1. The model occasionally broke the JSON-only output rule mid-conversation and returned plain prose instead — `extractJson` now falls back to pulling the first `{...}` block out of prose, and `callModel` retries with a corrective nudge (up to 2 times, not persisted into the visible history) before giving up.
+2. That retry path could echo an empty-string model reply back into the next API call, which Anthropic's API rejects outright (`messages: text content blocks must be non-empty`, a real 400 hit live). Added a `nonEmpty()` guard applied once at the source in `parseModelReply`, so every downstream use (history, nudges, the client-facing reply) is safe.
+
+A third bug (frontend-only, already folded into the Entry 7 commit since `app/page.tsx` was never committed in the broken state): `AnimatePresence mode="wait"` around the composer/report-card swap could get stuck — the composer's exit animation never completed, so the report card stayed hidden behind it forever even though the API and React state were both already correct (verified directly via the React fiber). Removed `mode="wait"` and dropped the composer's `exit` animation so it unmounts instantly instead of waiting on a stalled transition.
+
+**Prompt:**
+> (Found and fixed while completing the "test it yourself in the browser" step
+> above — not a separate user request. Reproduced by running full interviews
+> against a real Anthropic session and watching the network/console/React state
+> directly.)
